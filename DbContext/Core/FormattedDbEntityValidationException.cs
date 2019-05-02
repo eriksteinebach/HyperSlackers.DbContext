@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 // stolen from: http://stackoverflow.com/questions/7795300/validation-failed-for-one-or-more-entities-see-entityvalidationerrors-propert
 namespace HyperSlackers.AspNet.Identity.EntityFramework
 {
+    [Serializable]
     public class FormattedDbEntityValidationException : Exception
     {
         public FormattedDbEntityValidationException(DbEntityValidationException innerException) :
