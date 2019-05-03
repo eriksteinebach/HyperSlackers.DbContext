@@ -40,7 +40,7 @@ namespace HyperSlackers.DbContext.Demo.Migrations
 
             // DRM Added
 
-            Task.Run(async () =>
+            var task = Task.Run(async () =>
             {
                 // grab the managers
                 var hostManager = new ApplicationHostManager(new HyperHostStoreGuid<ApplicationUser>(context));
@@ -120,7 +120,7 @@ namespace HyperSlackers.DbContext.Demo.Migrations
                 if (result.Succeeded)
                 {
                     context.SaveChanges();
-                    await userManager.AddToRoleAsync(user.Id, "Super");
+                    await userManager.AddToRoleAsync(systemHost.Id, user.Id, "Super");
                     context.SaveChanges();
                 }
                 // admin - system
@@ -147,7 +147,7 @@ namespace HyperSlackers.DbContext.Demo.Migrations
                 if (result.Succeeded)
                 {
                     context.SaveChanges();
-                    await userManager.AddToRoleAsync(user.Id, "User", true); // global user role
+                    await userManager.AddToRoleAsync(systemHost.Id, user.Id, "User", true); // global user role
                     await userManager.AddToRoleAsync(systemHost.Id, user.Id, "Player", true); // system player role (it's not a global role, so global param will get ignored)
                     context.SaveChanges();
                 }
@@ -157,7 +157,7 @@ namespace HyperSlackers.DbContext.Demo.Migrations
                 if (result.Succeeded)
                 {
                     context.SaveChanges();
-                    await userManager.AddToRoleAsync(user.Id, "User", true); // global user role
+                    await userManager.AddToRoleAsync(localHost.Id, user.Id, "User", true); // global user role
                     await userManager.AddToRoleGroupAsync(localHost.Id, user.Id, "Manager"); // localhost's manager group
                     context.SaveChanges();
                 }
@@ -165,6 +165,8 @@ namespace HyperSlackers.DbContext.Demo.Migrations
                 // turn auditing back on
                 context.AuditingEnabled = auditingEnabled;
             });
+
+            task.Wait();
         }
 
         // DRM Added
